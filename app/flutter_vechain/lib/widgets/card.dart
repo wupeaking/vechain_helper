@@ -98,7 +98,7 @@ class _SelfCardState extends State<SelfCard> {
 
                   _accout = Accout(
                       value.privKey.addrToString(), value.privKey.hexPrivkey(),
-                      balance: 0);
+                      balance: "0");
                   // 请求网络 更新余额
                   _request_balance(_accout.address);
 
@@ -274,12 +274,15 @@ class _SelfCardState extends State<SelfCard> {
 
   Future<bool> _request_balance(String addr) async {
     print("请求余额===============>");
-    var onValue = await vetBalance(addr);
+    var onValue = await getBalance(addr, "vet");
 
     if (onValue is String) {
       print("请求异常: ${onValue}");
     } else if (onValue is VETRequest) {
-      _accout.balance = double.parse(onValue.data.vet);
+      if(onValue.code != "0") {
+        print("请求接口异常: ${onValue.message}");
+      }
+      _accout.balance = onValue.data[0].balance;
       print("请求成功: ${onValue.data}");
     }
 

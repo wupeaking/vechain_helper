@@ -1,45 +1,48 @@
-class VETRequest {
-  String message;
-  BalanceResult data;
-  int code;
 
-  VETRequest({this.message, this.data, this.code});
+class VETRequest {
+  String code;
+  String message;
+  List<BalanceResult> data;
+
+  VETRequest({this.code, this.message, this.data});
 
   VETRequest.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = json['data'] != null ? new BalanceResult.fromJson(json['data']) : null;
     code = json['code'];
+    message = json['message'];
+    if (json['data'] != null) {
+      data = new List<BalanceResult>();
+      json['data'].forEach((v) {
+        data.add(new BalanceResult.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['code'] = this.code;
     data['message'] = this.message;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data.map((v) => v.toJson()).toList();
     }
-    data['code'] = this.code;
     return data;
   }
 }
 
 class BalanceResult {
-  String address;
-  String vet;
-  String vtho;
+  String contractAddress;
+  String balance;
 
-  BalanceResult({this.address, this.vet, this.vtho});
+  BalanceResult({this.contractAddress, this.balance});
 
   BalanceResult.fromJson(Map<String, dynamic> json) {
-    address = json['address'];
-    vet = json['vet'];
-    vtho = json['vtho'];
+    contractAddress = json['contract_address'];
+    balance = json['balance'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['address'] = this.address;
-    data['vet'] = this.vet;
-    data['vtho'] = this.vtho;
+    data['contract_address'] = this.contractAddress;
+    data['balance'] = this.balance;
     return data;
   }
 }
