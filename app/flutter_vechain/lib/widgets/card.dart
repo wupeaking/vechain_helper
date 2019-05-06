@@ -12,6 +12,7 @@ import '../requests/http_requets.dart';
 import '../requests/vetrequest_models.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
+import 'dart:math';
 
 // 钱包卡组件
 class SelfCard extends StatefulWidget {
@@ -48,20 +49,27 @@ class _SelfCardState extends State<SelfCard> {
     if (wid == null) {
       wid = WalletID()..id = 0;
     }
+    PrivkeyManager select;
     privs.map((e) {
       if (e.id == wid.id) {
-        // select = e;
+        
+        select = e;
         _accout = Accout(e.addrToString(), e.hexPrivkey());
       }
-    });
+    }).toList();  // 如果不调用toList 这个列表不被调用 
+
     if (_accout == null) {
-      // select = privs[0];
+      select = privs[0];
       _accout = Accout(privs[0].addrToString(), privs[0].hexPrivkey());
     }
     await dbID.close();
 
     await _request_balance(_accout.address);
     setState(() {});
+
+    // 通知改变当前钱包状态
+    final currentWallet = Provide.value<CurrentWalletState>(context);
+    currentWallet.changePrivKey(select);
   }
 
   @override
@@ -91,7 +99,7 @@ class _SelfCardState extends State<SelfCard> {
               height: 0,
               child: Provide<CurrentWalletState>(
                 builder: (context, child, value) {
-                  print("-------------------------");
+                  print("钱包状态: ${value.privKey}");
                   if (value.privKey == null) {
                     return Text("");
                   }
@@ -194,19 +202,46 @@ class _SelfCardState extends State<SelfCard> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
-        Text(
-          "${_accout.balance}",
-          style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: ScreenUtil.getInstance().setSp(58)),
+        Expanded(
+          flex: 1,
+          child: Text(
+            "${_accout.balance}",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: ScreenUtil.getInstance().setSp(58)),
+          ),
         ),
+
         Text(
           " VET",
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: ScreenUtil.getInstance().setSp(38)),
+              fontSize: ScreenUtil.getInstance().setSp(28)),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text(
+            "  ${_accout.vthoBalance}",
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: ScreenUtil.getInstance().setSp(58)),
+          ),
+        ),
+
+        Text(
+          " VTHO",
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(28)),
         ),
         Expanded(
           flex: 1,
@@ -214,7 +249,7 @@ class _SelfCardState extends State<SelfCard> {
         ), // 拉伸
         IconButton(
           icon: Icon(
-            Icons.add_circle,
+            MyIcon.change,
             color: Colors.white,
           ),
           onPressed: () {
@@ -273,16 +308,23 @@ class _SelfCardState extends State<SelfCard> {
   }
 
   Future<bool> _request_balance(String addr) async {
-    print("请求余额===============>");
-    var onValue = await getBalance(addr, "vet");
+    print("请求vet,vtho余额==============");
+    var onValue = await getBalance(addr, "vet,vtho");
 
     if (onValue is String) {
       print("请求异常: ${onValue}");
     } else if (onValue is VETRequest) {
-      if(onValue.code != "0") {
+      if (onValue.code != "0") {
         print("请求接口异常: ${onValue.message}");
       }
-      _accout.balance = onValue.data[0].balance;
+      for (var i = 0; i < onValue.data.length; i++) {
+        if (onValue.data[i].contractAddress == "vet") {
+          _accout.balance = onValue.data[i].balance;
+        } else if (onValue.data[i].contractAddress == "vtho") {
+          _accout.vthoBalance = onValue.data[i].balance;
+        }
+      }
+
       print("请求成功: ${onValue.data}");
     }
 
@@ -312,17 +354,22 @@ class _SelfCardState extends State<SelfCard> {
                 TextSpan(text: "地址:", style: TextStyle(color: Colors.black)),
                 TextSpan(
                     text: '${_accout.address}',
-                    style: TextStyle(color: Colors.green, decoration: TextDecoration.underline),
+                    style: TextStyle(
+                        color: Colors.green,
+                        decoration: TextDecoration.underline),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        launch("https://testnet.veforge.com/accounts/${_accout.address}/tokenTransfers", forceSafariVC: false);
+                        launch(
+                            "https://testnet.veforge.com/accounts/${_accout.address}/tokenTransfers",
+                            forceSafariVC: false);
                       }),
                 TextSpan(
-                  text: '\n\n VET: ${_accout.balance}',
+                  text: '\n\n VET: ${ double.parse(_accout.balance)/pow(10, 18)}',
                   style: TextStyle(color: Colors.black),
                 ),
                 TextSpan(
-                  text: '',
+                  text: '\n\n VTHO: ${double.parse(_accout.vthoBalance)/pow(10, 18)}',
+                  style: TextStyle(color: Colors.black),
                 ),
               ]),
             ),

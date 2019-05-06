@@ -3,9 +3,12 @@ class Accout {
   String address;
   //  余额
   String balance;
+
+  // 
+  String vthoBalance;
   // 私钥
   String privKey;
 
-  Accout(this.address, this.privKey, {this.balance: "0"});
+  Accout(this.address, this.privKey, {this.balance: "0", this.vthoBalance: "0"});
 
 }

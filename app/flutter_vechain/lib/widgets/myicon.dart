@@ -22,6 +22,8 @@ class MyIcon {
   static const IconData about = const _MyIconData(0xe682);
   // 导入钱包
   static const IconData importWallt = const _MyIconData(0xe682);
+  // 导入钱包
+  static const IconData change = const _MyIconData(0xe682);
 }
 
 class _MyIconData extends IconData {

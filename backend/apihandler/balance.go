@@ -45,10 +45,10 @@ func Balance(ctx echo.Context) error {
 		balance, err := queryBalance(allCurrency[i], account, c.BlockClient)
 		if err != nil {
 			ctx.Logger().Errorf("查询token余额出错, err: %v", err.Error())
-			errPackage(c, initialization.CallContractErr)
-			return nil
+			balanceResults = append(balanceResults, resultT{Contract: allCurrency[i], Balance: "0"})
+		}else{
+			balanceResults = append(balanceResults, resultT{Contract: allCurrency[i], Balance: balance.String()})
 		}
-		balanceResults = append(balanceResults, resultT{Contract: allCurrency[i], Balance: balance.String()})
 	}
 
 	// 封装数据 返回

@@ -166,6 +166,14 @@ class _AddTokenPageState extends State<AddTokenPage> {
     if (!buttonEnable) {
       return;
     }
+    if(tokenAddr.length != 42){
+      showInfo("地址格式错误");
+      setState(() {
+        isCreating = false;
+      });
+      return;
+    }
+
     // 开启加载动画
     setState(() {
       isCreating = true;
@@ -195,6 +203,7 @@ class _AddTokenPageState extends State<AddTokenPage> {
     if(cur.tokens != null){
       var tks = cur.tokens;
       tks.add(token);
+      print("添加tokens: ${tks.length}");
       cur.changeTokens(tks);
     }
     
