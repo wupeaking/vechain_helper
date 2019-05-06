@@ -1,7 +1,9 @@
 package apihandler
 
 import (
+	"context"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -12,8 +14,6 @@ import (
 	"math/big"
 	"net/http"
 	"strings"
-	"errors"
-	"context"
 )
 
 // Balance 查询账户余额 get /balance/:account?currency=vet,vtho,0x12121,0x43434
@@ -39,7 +39,7 @@ func Balance(ctx echo.Context) error {
 		Balance  string `json:"balance"`
 	}
 
-	balanceResults := []resultT{}
+	var balanceResults []resultT
 
 	for i := 0; i < len(allCurrency); i++ {
 		balance, err := queryBalance(currency, account, c.BlockClient)

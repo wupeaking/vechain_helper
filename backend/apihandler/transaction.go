@@ -61,7 +61,7 @@ func UnSignTx(ctx echo.Context) error {
 	// 5. 插入数据库
 	// 6. 广播交易
 	// 7. 返回
-	clause := []database.Clause{database.Clause{To: request.To, Amount: amount}}
+	clause := []database.Clause{{To: request.To, Amount: amount}}
 	gasUsed, err := calcTransferGasUsed(request.Currency, amount,
 		clause, c.BlockClient)
 
@@ -97,8 +97,8 @@ func UnSignTx(ctx echo.Context) error {
 	id := u4.String()
 
 	// 插入数据
-	if database.InsertTxOrder(c.DB, id, request.From, request.To,
-		request.Currency, request.Amount, fmt.Sprintf("%d", gasUsed), 0, encode) != nil {
+	if err := database.InsertTxOrder(c.DB, id, request.From, request.To,
+		request.Currency, request.Amount, fmt.Sprintf("%d", gasUsed), 0, encode); err != nil {
 		ctx.Logger().Errorf("创建未签名交易过程中, 添加交易订单信息到数据库出错, 交易编号:[%s], err: %s",
 			id, err.Error())
 		errPackage(c, initialization.DataBaseErr)

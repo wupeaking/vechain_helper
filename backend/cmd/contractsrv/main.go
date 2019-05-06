@@ -30,10 +30,10 @@ func init() {
 func main() {
 	// 创建web实例
 	app, err := initialization.NewWebApp()
-	app.Debug = initialization.Debug
 	if err != nil {
 		app.Logger.Fatal(err)
 	}
+	app.Debug = initialization.Debug
 
 	if initialization.IsProduce {
 		initialization.ChainTag = 0x4a

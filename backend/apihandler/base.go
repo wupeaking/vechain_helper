@@ -1,6 +1,7 @@
 package apihandler
 
 import (
+	"context"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -15,7 +16,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"context"
 )
 
 func errPackage(ctx echo.Context, err initialization.ErrDesc) {
@@ -105,9 +105,9 @@ func constructUnSignTxData(currency string, blockNum uint32, clauses []database.
 
 	if currency != "vet" {
 		var tokenContarct string
-		if currency == "vtho"{
+		if currency == "vtho" {
 			tokenContarct, _ = initialization.TokenContractMap[currency]
-		}else{
+		} else {
 			tokenContarct = currency
 		}
 
@@ -146,7 +146,6 @@ func constructUnSignTxData(currency string, blockNum uint32, clauses []database.
 	if err != nil {
 		return "", "", err
 	}
-
 
 	return fmt.Sprintf("%0x", d),
 		fmt.Sprintf("%0x", trxBuild.SigningHash().Bytes()),
