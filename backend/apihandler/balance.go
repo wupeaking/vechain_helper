@@ -42,7 +42,7 @@ func Balance(ctx echo.Context) error {
 	var balanceResults []resultT
 
 	for i := 0; i < len(allCurrency); i++ {
-		balance, err := queryBalance(currency, account, c.BlockClient)
+		balance, err := queryBalance(allCurrency[i], account, c.BlockClient)
 		if err != nil {
 			ctx.Logger().Errorf("查询token余额出错, err: %v", err.Error())
 			errPackage(c, initialization.CallContractErr)
@@ -106,6 +106,11 @@ func queryBalance(currency string, account string, cli *vechain.Client) (*big.In
 	if err != nil {
 		return nil, err
 	}
+
+	if result.VMErr != "" {
+		return nil, errors.New(result.VMErr)
+	}
+
 	//value := reflect.New(reflect.TypeOf(big.NewInt(0)))
 	value := big.NewInt(0)
 	resultData, _ := hex.DecodeString(result.Data[2:])
