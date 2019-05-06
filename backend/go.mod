@@ -19,6 +19,7 @@ require (
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/moul/http2curl v1.0.0
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
+	github.com/satori/go.uuid v1.2.0 //indirect
 	github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c // indirect
 	github.com/stretchr/testify v1.3.0 // indirect

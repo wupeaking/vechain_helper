@@ -43,9 +43,9 @@ func main() {
 	initialization.SwitchKey()
 
 	// Routes
-
 	app.GET("/balance/:account", apihandler.Balance)
-	app.PUT("/transactions", apihandler.Transaction)
+	app.PUT("/unsigned_tx", apihandler.UnSignTx)
+	app.PUT("/signed_tx", apihandler.PushTx)
 
 	// Start server
 	app.Logger.Info("version: ", initialization.Version)
