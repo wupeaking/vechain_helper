@@ -11,6 +11,7 @@ web前端暂时只是一个简单的HTML页面。
 ### 项目截图
 ![app首页](./img/app1.jpeg)
 ![app功能](./img/app1.jpeg)
+![show](./img/show.gif)
 
 ### 注意
 此项目主要是一个练手项目， 所有的代码均是开源的。 
