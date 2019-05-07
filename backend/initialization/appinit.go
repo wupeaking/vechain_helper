@@ -80,6 +80,7 @@ func NewWebApp() (*echo.Echo, error) {
 }
 
 func httpErrorHandler(err error, c echo.Context) {
+	println("httpErrorHandler======================")
 	var (
 		code = http.StatusInternalServerError
 		msg  interface{}
@@ -102,7 +103,7 @@ func httpErrorHandler(err error, c echo.Context) {
 			err = c.NoContent(code)
 		} else {
 			//
-			err = c.JSON(200, map[string]string{"errCode": InternalServerError.ErrCode(), "data": "", "errMsg": msg.(string)})
+			err = c.JSON(200, map[string]string{"code": InternalServerError.ErrCode(), "data": "", "message": msg.(string)})
 		}
 		if err != nil {
 			WebApp.Logger.Error(err)

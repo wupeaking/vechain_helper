@@ -26,7 +26,7 @@ Future getBalance(String account, String currency) async {
   }
 }
 
-Future unsigntx_request(String from, String to, String amount, String currency) async {
+Future unsigntx_request(String from, String to, String amount, String currency, String txType) async {
   // 创建DIO
   var dio = Dio();
   try {
@@ -36,10 +36,11 @@ Future unsigntx_request(String from, String to, String amount, String currency) 
       'from': from,
       'to': to,
       'amount': amount,
-      'currency': currency
+      'currency': currency,
+      'txType': txType,
     };
     Response<Map<String, dynamic>> resp =
-        await dio.put(APIS['unsignTx'], queryParameters: query);
+        await dio.put(APIS['unsignTx'], data: query);
     if (resp.statusCode != 200) {
       return "网络请求失败";
     }
@@ -61,7 +62,7 @@ Future pushtx_request(String requestID, String sign) async {
       "sign": sign
     };
     Response<Map<String, dynamic>> resp =
-        await dio.put(APIS['pushTx'], queryParameters: query);
+        await dio.put(APIS['pushTx'], data: query);
     if (resp.statusCode != 200) {
       return "网络请求失败";
     }

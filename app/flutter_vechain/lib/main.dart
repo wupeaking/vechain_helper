@@ -12,6 +12,8 @@ import 'package:flutter/gestures.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import './requests/http_requets.dart';
+import './requests/unsign_tx_models.dart';
 
 void main() {
   // 创建Provide对象
@@ -78,8 +80,7 @@ class _IndexPageState extends State<IndexPage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           onPressed: () {
-            print("扫描支付");
-            scan();
+            scanTransaction();
           },
           tooltip: '扫描支付',
           child: Row(
@@ -120,7 +121,7 @@ class _IndexPageState extends State<IndexPage> {
                       fontSize: ScreenUtil.getInstance().setSp(30),
                       fontWeight: FontWeight.normal),
                 ),
-                onTap: () => {scan()},
+                onTap: () => {scanTransaction()},
               ),
             ),
             ClipRect(
@@ -235,13 +236,64 @@ class _IndexPageState extends State<IndexPage> {
     );
   }
 
-  Future scan() async {
+    showInfo(String content) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            actions: <Widget>[
+              RaisedButton(
+                color: Color.fromRGBO(82, 195, 216, 1),
+                textColor: Colors.white,
+                child: Text("确定"),
+                onPressed: () {
+                  GlobalRouter.r.pop(context);
+                },
+              )
+            ],
+            title: Text(content),
+          );
+        });
+  }
+
+  Future scanTransaction() async {
     try {
+      final cur = Provide.value<CurrentWalletState>(context);
+      if(cur.privKey == null){
+        showInfo("当前没有可用钱包");
+        return;
+      }
+
       String barcode = await BarcodeScanner.scan();
       print(barcode);
+      var u = Uri.parse(barcode);
+      // 解析参数
+      String to = u.queryParameters["to"];
+      String amount = u.queryParameters["amount"];
+      String currency = u.queryParameters["currency"];
+      String data = u.queryParameters["data"]==null? "0x": u.queryParameters["data"];
+      String txType = u.queryParameters["txType"]==null? "vet": u.queryParameters["txType"];
+
+      if(to==null || amount ==null || currency==null){
+        showInfo("无效的二维码数据");
+        return;
+      }
+      // 开始网络请求 创建交易
+      var result = await unsigntx_request(cur.privKey.addrToString(), to, amount, currency, txType);
+      if(result is String){
+        showInfo(result);
+        return;
+      }
+      var r = (result as UnsignTxModel);
+      if(r.code != "0"){
+        showInfo(r.message);
+        return;
+      }
+      // /send_tx/:to/:value/:data/:currency/:txType/:needSign:/requestID
+      GlobalRouter.r.navigateTo(context, "/send_tx/${to}/${amount}/${data}/${currency}/${r.data.txType}/${r.data.needSignContent}/${r.data.requestId}");
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
-        print("The user did not grant the camera permission!");
+        showInfo("无访问相机权限");
       } else {
         print("未知错误");
       }

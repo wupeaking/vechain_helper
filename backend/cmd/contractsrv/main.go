@@ -45,7 +45,7 @@ func main() {
 	// Routes
 	app.GET("/balance/:account", apihandler.Balance)
 	app.PUT("/unsigned_tx", apihandler.UnSignTx)
-	app.PUT("/signed_tx", apihandler.PushTx)
+	app.PUT("/push_tx", apihandler.PushTx)
 
 	// Start server
 	app.Logger.Info("version: ", initialization.Version)

@@ -18,7 +18,8 @@ import (
 
 // 和账户交易相关的API放在此文件下
 
-// UnSignTx 创建未签名的交易 put /unsign_tx {"currency": "xxx",  }
+// UnSignTx 创建未签名的交易 put /unsign_tx {"currency": "xxx", "from": "0x1212", "to": "0x232", "amount":  "12131",
+// "currency": "vet/合约地址", "txType": "暂时只支持VET VTHO ERC20"}
 func UnSignTx(ctx echo.Context) error {
 	c, ok := ctx.(*initialization.CustomContext)
 	if !ok {
@@ -43,8 +44,14 @@ func UnSignTx(ctx echo.Context) error {
 		errPackage(c, initialization.ParamError)
 		return nil
 	}
+	txType := "vet"
+	if request.Currency == "vet" || request.Currency == "vtho" {
+		txType = request.Currency
+	}else {
+		txType = "erc20"
+	}
 
-	ctx.Logger().Infof("收到创建未签名交易请求, 币种:%s from地址:%s，to: %s, amount: %v",
+		ctx.Logger().Infof("收到创建未签名交易请求, 币种:%s from地址:%s，to: %s, amount: %v",
 		request.Currency, request.From, request.To, request.Amount)
 
 	// 查询当前区块号
@@ -116,7 +123,11 @@ func UnSignTx(ctx echo.Context) error {
 		Data: struct {
 			NeedSignContent string `json:"need_sign_content"`
 			ID              string `json:"request_id"`
-		}{NeedSignContent: needSign, ID: id},
+			From string `json:"from"`
+			To string `json:"to"`
+			Amount string `json:"amount"`
+			TxType string `json:"tx_type"`
+		}{NeedSignContent: needSign, ID: id, From: request.From, To:request.To, Amount:request.Amount, TxType: txType},
 	}
 	c.JSON(http.StatusOK, result)
 	return nil
@@ -129,7 +140,7 @@ func PushTx(ctx echo.Context) error {
 	if !ok {
 		return errors.New("转换自定义上下文异常")
 	}
-	return nil
+
 	//解析请求参数
 	request := struct {
 		ID   string `json:"request_id"`

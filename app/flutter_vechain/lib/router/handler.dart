@@ -4,6 +4,7 @@ import '../pages/create_wallet.dart';
 import '../pages/import_wallet.dart';
 import '../pages/wallet_list.dart';
 import '../pages/add_token.dart';
+import '../pages/send_tx.dart';
 import '../main.dart';
 
 var rootHandler = Handler(
@@ -29,4 +30,12 @@ var listWalletHandler = Handler(
 var addTokenHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return AddTokenPage();
+});
+
+var txHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return TransactionPage(params["to"]?.first, params["value"]?.first,
+   params["data"]?.first, params["currency"]?.first, params["txType"]?.first,
+    params["needSign"]?.first, params["requestID"]?.first,
+   );
 });

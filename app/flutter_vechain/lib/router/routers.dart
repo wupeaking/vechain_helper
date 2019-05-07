@@ -12,6 +12,7 @@ class GlobalRouter {
   static String importWallet = "/import_wallet";
   static String listWallet = "/list_wallet";
   static String addToken = "/add_token";
+  static String sendTx = "/send_tx/:to/:value/:data/:currency/:txType/:needSign/:requestID";
 
   static void configureRoutes(Router router) {
     r = router;
@@ -24,5 +25,6 @@ class GlobalRouter {
     router.define(importWallet, handler: importWalletHandler);
     router.define(listWallet, handler: listWalletHandler);
     router.define(addToken, handler: addTokenHandler);
+    router.define(sendTx, handler: txHandler);
   }
 }

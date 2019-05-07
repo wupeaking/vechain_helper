@@ -15,10 +15,11 @@ type Clause struct {
 // InsertTxOrder  插入交易请求
 func InsertTxOrder(db *sqlx.DB, requestID, from, to, currency, amount, gasUsed string, status int, rlp string) error {
 	// 拼接SQL
-	sqlStr := fmt.Sprintf("insert into transfer_order (request_id, `from`,"+
-		" `to`, currency, amount, gas_used, status, rlp) values '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' ",
+	sqlStr := fmt.Sprintf("insert into transaction_records (request_id, `from`,"+
+		" `to`, currency, amount, gas_used, status, rlp) values ('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s') ",
 		requestID, from, to, currency, amount, gasUsed, status, rlp)
 
+	println(sqlStr)
 	_, err := db.Exec(sqlStr)
 	return err
 }
@@ -35,7 +36,7 @@ func InsertTxStatus(db *sqlx.DB, txID, requestID string, status int) error {
 
 //SelectTxRlp 查询交易的RLP内容
 func SelectTxRlp(db *sqlx.DB, id string) (string, error) {
-	sqlStr := fmt.Sprintf(`select rlp from  transfer_status where request_id = '%s'`,
+	sqlStr := fmt.Sprintf(`select rlp from  transaction_records where request_id = '%s'`,
 		id)
 	var result string
 	err := db.QueryRowx(sqlStr).Scan(&result)
