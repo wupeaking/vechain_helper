@@ -265,7 +265,6 @@ class _IndexPageState extends State<IndexPage> {
       }
 
       String barcode = await BarcodeScanner.scan();
-      print(barcode);
       var u = Uri.parse(barcode);
       // 解析参数
       String to = u.queryParameters["to"];

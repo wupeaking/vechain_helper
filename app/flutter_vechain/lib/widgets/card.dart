@@ -83,7 +83,7 @@ class _SelfCardState extends State<SelfCard> {
           //border: Border.all(color: Colors.black, width: 1),
           borderRadius: BorderRadius.circular(20),
           image: DecorationImage(
-              fit: BoxFit.fill, image: AssetImage("images/ethereum.png")),
+              fit: BoxFit.fill, image: AssetImage("images/vechain.jpeg")),
         ),
         child: Column(
           children: <Widget>[
@@ -250,6 +250,7 @@ class _SelfCardState extends State<SelfCard> {
         IconButton(
           icon: Icon(
             MyIcon.change,
+            size: ScreenUtil.getInstance().setHeight(70),
             color: Colors.white,
           ),
           onPressed: () {

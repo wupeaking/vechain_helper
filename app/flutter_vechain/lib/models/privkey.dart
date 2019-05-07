@@ -96,12 +96,7 @@ class PrivkeyManager {
     Uint8List hashBytes = Uint8List.fromList(bytes);
     crypto.MsgSignature msgSign =
         crypto.sign(hashBytes, numbers.intToBytes(c.privateKey));
-    String v = "";
-    if(msgSign.v-27 == 0){
-      v = "00";
-    }else{
-      v = "01";
-    }
+    String v = "0"+(msgSign.v-27).toString();
     
     return numbers.bytesToHex(numbers.intToBytes(msgSign.r)) +
         numbers.bytesToHex(numbers.intToBytes(msgSign.s)) +
