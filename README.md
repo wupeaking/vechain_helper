@@ -9,8 +9,10 @@ APP端使用flutter框架来进行构建的ios&安卓的跨平台app，
 web前端暂时只是一个简单的HTML页面。
 
 ### 项目截图
-<img src="./img/app2.jpeg" width=750 height=1334 />
-![app功能](./img/app1.jpeg)
+<img src="./img/app1.jpeg" width=340 height=750 />
+
+<img src="./img/app2.jpeg" width=340 height=750 />
+
 ![show](./img/show.gif)
 
 ### 注意
