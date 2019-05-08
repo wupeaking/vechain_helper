@@ -73,9 +73,9 @@ $> contractserver.x  -rpcaddr http://192.168.2.144:8669
 # docker启动示例
 
 # 启动合约服务
-$> docker run --name cdib-web -p 31312:31312 -d wupengxin/cdib ./contractserver.x \
- -rpcaddr http://192.168.2.144:8669 -dbaddr 127.0.0.1:3306 -dbpasswd passwd \
- -dbuser user -dbname cdib -produce true 
+$> docker run --name vechain_helper -p 31313:31312 -d wupengxin/vechain_helper ./contractserver.x \
+ -rpcaddr http://127.0.0.1:8669 -dbaddr 127.0.0.1:3306 -dbpasswd passwd \
+ -dbuser user -dbname cdib -produce false 
 
 
 ```
