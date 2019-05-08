@@ -15,6 +15,9 @@ $> docker run  --privileged -d \
 --name thor-node vechain/thor --network test --api-addr 0.0.0.0:8669
 ```
 
+### 数据库
+- 创建数据库 
+- 执行初始化脚本 脚本位于 ./sql/init.sql
 
 ### 部署方式
 
