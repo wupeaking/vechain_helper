@@ -13,7 +13,15 @@ web前端暂时只是一个简单的HTML页面。
 
 <img src="./img/app2.jpeg" width=340 height=750 />
 
+![web](./img/web.gif)
+
 ![show](./img/show.gif)
+
+### APP安装包说明
+目前只释放了安卓包, ios因为穷没有证书。
+
+[安卓包下载](https://github.com/wupeaking/vechain_helper/releases/download/v0.1/app-release.apk)
+
 
 ### 注意
 此项目主要是一个练手项目， 所有的代码均是开源的。 
