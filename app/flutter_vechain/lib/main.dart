@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:provide/provide.dart';
 import './router/routers.dart';
 import './pages/home.dart';
+import './pages/wallet_list.dart';
 import './widgets/myicon.dart';
 import './provide/wallet.dart';
 import './provide/token.dart';
@@ -126,20 +127,19 @@ class _IndexPageState extends State<IndexPage> {
             ),
             ClipRect(
               child: ListTile(
-                leading: Icon(
-                  MyIcon.wallet,
-                  color: Colors.black,
-                ),
-                title: Text(
-                  '查看钱包',
-                  style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: ScreenUtil.getInstance().setSp(30),
-                      fontWeight: FontWeight.normal),
-                ),
-                onTap: () =>
-                    {GlobalRouter.r.navigateTo(context, "list_wallet")},
-              ),
+                  leading: Icon(
+                    MyIcon.wallet,
+                    color: Colors.black,
+                  ),
+                  title: Text(
+                    '查看钱包',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: ScreenUtil.getInstance().setSp(30),
+                        fontWeight: FontWeight.normal),
+                  ),
+                  onTap: () =>
+                      {GlobalRouter.r.navigateTo(context, "list_wallet")}),
             ),
             ClipRect(
               child: ListTile(
@@ -226,7 +226,7 @@ class _IndexPageState extends State<IndexPage> {
                       }),
                 TextSpan(
                   style: TextStyle(color: Colors.black54),
-                  text: '上查看源码. 期望能为你学习flutter，区块链技术提供帮助。但是禁止用于商业目的.',
+                  text: '上查看源码. 期望能为你学习flutter，区块链技术提供帮助。但是��止用于商业目的.',
                 ),
               ],
             ),
@@ -236,7 +236,7 @@ class _IndexPageState extends State<IndexPage> {
     );
   }
 
-    showInfo(String content) {
+  showInfo(String content) {
     showDialog(
         context: context,
         builder: (context) {
@@ -259,7 +259,7 @@ class _IndexPageState extends State<IndexPage> {
   Future scanTransaction() async {
     try {
       final cur = Provide.value<CurrentWalletState>(context);
-      if(cur.privKey == null){
+      if (cur.privKey == null) {
         showInfo("当前没有可用钱包");
         return;
       }
@@ -270,26 +270,31 @@ class _IndexPageState extends State<IndexPage> {
       String to = u.queryParameters["to"];
       String amount = u.queryParameters["amount"];
       String currency = u.queryParameters["currency"];
-      String data = u.queryParameters["data"]==null? "0x": u.queryParameters["data"];
-      String txType = u.queryParameters["txType"]==null? "vet": u.queryParameters["txType"];
+      String data =
+          u.queryParameters["data"] == null ? "0x" : u.queryParameters["data"];
+      String txType = u.queryParameters["txType"] == null
+          ? "vet"
+          : u.queryParameters["txType"];
 
-      if(to==null || amount ==null || currency==null){
+      if (to == null || amount == null || currency == null) {
         showInfo("无效的二维码数据");
         return;
       }
       // 开始网络请求 创建交易
-      var result = await unsigntx_request(cur.privKey.addrToString(), to, amount, currency, txType);
-      if(result is String){
+      var result = await unsigntx_request(
+          cur.privKey.addrToString(), to, amount, currency, txType);
+      if (result is String) {
         showInfo(result);
         return;
       }
       var r = (result as UnsignTxModel);
-      if(r.code != "0"){
+      if (r.code != "0") {
         showInfo(r.message);
         return;
       }
       // /send_tx/:to/:value/:data/:currency/:txType/:needSign:/requestID
-      GlobalRouter.r.navigateTo(context, "/send_tx/${to}/${amount}/${data}/${currency}/${r.data.txType}/${r.data.needSignContent}/${r.data.requestId}");
+      GlobalRouter.r.navigateTo(context,
+          "/send_tx/${to}/${amount}/${data}/${currency}/${r.data.txType}/${r.data.needSignContent}/${r.data.requestId}");
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         showInfo("无访问相机权限");
